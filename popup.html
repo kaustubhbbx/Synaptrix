@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Truth Layer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 320px;
+      background: #0f0f1a;
+      color: #e8e8f0;
+      font-family: system-ui, -apple-system, sans-serif;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1a3e, #0d1b4b);
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #1a73e8, #8b5cf6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .title-block h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    .title-block p {
+      font-size: 11px;
+      color: #8888aa;
+      margin-top: 1px;
+    }
+
+    .status-pill {
+      margin: 16px 20px 0;
+      background: rgba(26,115,232,0.12);
+      border: 1px solid rgba(26,115,232,0.3);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12px;
+      color: #7eb3ff;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #1a73e8;
+      border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── Legend ── */
+    .legend { margin: 14px 20px 0; }
+
+    .legend h2 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8888aa;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+
+    .swatch {
+      width: 32px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .swatch.false {
+      background: rgba(255,0,0,0.18);
+      border-bottom: 2px solid #ff4444;
+    }
+
+    .swatch.uncertain {
+      background: rgba(255,200,0,0.18);
+      border-bottom: 2px dashed #ffaa00;
+    }
+
+    .legend-item span {
+      font-size: 12px;
+      color: #c8c8e0;
+    }
+
+    .legend-item .tag {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+
+    .tag.false { background: rgba(255,68,68,0.18); color: #ff6666; }
+    .tag.uncertain { background: rgba(255,170,0,0.18); color: #ffbb44; }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 16px 0 0;
+    }
+
+    /* ── Provider Selector ── */
+    .provider-section {
+      padding: 14px 20px 0;
+    }
+
+    .provider-section h2 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8888aa;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+
+    .provider-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .provider-tab {
+      flex: 1;
+      padding: 8px 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 11px;
+      color: #9999bb;
+    }
+
+    .provider-tab:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .provider-tab.active {
+      background: rgba(26,115,232,0.15);
+      border-color: rgba(26,115,232,0.5);
+      color: #7eb3ff;
+    }
+
+    .provider-tab .tab-icon {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .provider-tab .tab-label {
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .provider-tab .tab-desc {
+      font-size: 10px;
+      color: #666688;
+      margin-top: 2px;
+    }
+
+    .provider-tab.active .tab-desc {
+      color: #7eb3ff88;
+    }
+
+    /* ── API Key Sections ── */
+    .api-section {
+      padding: 0 20px 14px;
+    }
+
+    .api-section h2 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8888aa;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+
+    .api-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .api-row label {
+      font-size: 11px;
+      color: #9999bb;
+    }
+
+    .api-row input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: #e8e8f0;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .api-row input:focus {
+      border-color: rgba(26,115,232,0.6);
+    }
+
+    .api-row input::placeholder {
+      color: #4a4a6a;
+    }
+
+    .key-hint {
+      font-size: 10px;
+      color: #5a5a7a;
+      margin-top: 2px;
+    }
+
+    .key-hint a {
+      color: #5566aa;
+      text-decoration: none;
+    }
+
+    .key-hint a:hover {
+      text-decoration: underline;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 9px;
+      background: linear-gradient(135deg, #1a73e8, #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 4px;
+    }
+
+    .save-btn:hover { opacity: 0.88; }
+
+    .saved-msg {
+      text-align: center;
+      font-size: 11px;
+      color: #4caf94;
+      margin-top: 6px;
+      min-height: 16px;
+    }
+
+    /* ── Active provider badge ── */
+    .active-badge {
+      margin: 10px 20px 0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .active-badge.gemini {
+      background: rgba(26,115,232,0.1);
+      border: 1px solid rgba(26,115,232,0.25);
+      color: #7eb3ff;
+    }
+
+    .active-badge.groq {
+      background: rgba(245,128,37,0.1);
+      border: 1px solid rgba(245,128,37,0.25);
+      color: #f5a623;
+    }
+
+    .active-badge.none {
+      background: rgba(255,68,68,0.1);
+      border: 1px solid rgba(255,68,68,0.25);
+      color: #ff6666;
+    }
+
+    .footer {
+      padding: 10px 20px 14px;
+      text-align: center;
+      font-size: 11px;
+      color: #44445a;
+    }
+
+    .footer a { color: #5566aa; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">🔍</div>
+    <div class="title-block">
+      <h1>Truth Layer</h1>
+      <p>AI Hallucination Detector</p>
+    </div>
+  </div>
+
+  <div class="status-pill">
+    <div class="dot"></div>
+    Active on ChatGPT — monitoring responses
+  </div>
+
+  <!-- Active Provider Badge -->
+  <div class="active-badge none" id="activeBadge">
+    ⚙️ <span id="activeBadgeText">Checking...</span>
+  </div>
+
+  <div class="legend" style="margin-top:12px;">
+    <h2>Highlight Legend</h2>
+    <div class="legend-item">
+      <div class="swatch false"></div>
+      <span>Factually incorrect claim</span>
+      <span class="tag false">FALSE</span>
+    </div>
+    <div class="legend-item">
+      <div class="swatch uncertain"></div>
+      <span>Could not be verified</span>
+      <span class="tag uncertain">UNCERTAIN</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Provider Selection -->
+  <div class="provider-section">
+    <h2>🤖 AI Provider</h2>
+    <div class="provider-tabs">
+      <div class="provider-tab" id="tabAuto" data-provider="auto">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-label">Auto</span>
+        <span class="tab-desc">Best available</span>
+      </div>
+      <div class="provider-tab" id="tabGemini" data-provider="gemini">
+        <span class="tab-icon">🔵</span>
+        <span class="tab-label">Gemini</span>
+        <span class="tab-desc">+ Web Search</span>
+      </div>
+      <div class="provider-tab" id="tabGroq" data-provider="groq">
+        <span class="tab-icon">🟢</span>
+        <span class="tab-label">Groq</span>
+        <span class="tab-desc">Ultra-fast</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Keys -->
+  <div class="api-section">
+    <h2>🔑 API Keys</h2>
+
+    <div class="api-row">
+      <label>Gemini API Key</label>
+      <input type="password" id="geminiKey" placeholder="AIza..." />
+      <div class="key-hint">Free at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a> — has live web search</div>
+    </div>
+
+    <div class="api-row">
+      <label>Groq API Key</label>
+      <input type="password" id="groqKey" placeholder="gsk_..." />
+      <div class="key-hint">Free at <a href="https://console.groq.com/keys" target="_blank">console.groq.com</a> — ultra-fast inference</div>
+    </div>
+
+    <button class="save-btn" id="saveBtn">Save Settings</button>
+    <div class="saved-msg" id="savedMsg"></div>
+  </div>
+
+  <div class="footer">
+    Hover over highlights for details &amp; sources
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
