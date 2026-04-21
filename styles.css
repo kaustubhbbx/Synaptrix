@@ -1,0 +1,233 @@
+/* ============================================================ */
+/*  Truth Layer — Highlight & Tooltip Styles                    */
+/* ============================================================ */
+
+/* ── A. Sentence-level highlights ─────────────────────────────────────────── */
+.tl-flag {
+    border-radius: 4px;
+    padding: 2px 4px;
+    cursor: pointer;
+    display: inline;
+    position: relative;
+    transition: all 0.2s ease;
+    /* Subtle entrance pulse */
+    animation: tl-pop-in 0.35s ease-out both;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+@keyframes tl-pop-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Inaccurate — score < 0.50 ── red */
+.tl-flag-red {
+    background-color: rgba(231, 76, 60, 0.30);
+    border: 1px solid rgba(231, 76, 60, 0.7);
+    border-bottom: 3px solid rgba(231, 76, 60, 0.95);
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.08);
+    text-decoration-color: rgba(231, 76, 60, 0.9);
+    font-weight: 600;
+}
+.tl-flag-red:hover {
+    background-color: rgba(231, 76, 60, 0.45);
+    box-shadow: 0 0 12px rgba(231, 76, 60, 0.35), inset 0 0 6px rgba(231,76,60,0.2);
+}
+
+/* Uncertain high — score 0.50–0.65 ── orange */
+.tl-flag-orange {
+    background-color: rgba(230, 126, 34, 0.28);
+    border: 1px solid rgba(230, 126, 34, 0.65);
+    border-bottom: 3px dashed rgba(230, 126, 34, 0.95);
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.08);
+    text-decoration-color: rgba(230, 126, 34, 0.85);
+    font-weight: 600;
+}
+.tl-flag-orange:hover {
+    background-color: rgba(230, 126, 34, 0.42);
+    box-shadow: 0 0 12px rgba(230, 126, 34, 0.3), inset 0 0 6px rgba(230,126,34,0.15);
+}
+
+/* Uncertain low — score 0.65–0.79 ── yellow */
+.tl-flag-yellow {
+    background-color: rgba(241, 196, 15, 0.18);
+    border-bottom: 2px dashed rgba(241, 196, 15, 0.85);
+}
+.tl-flag-yellow:hover {
+    background-color: rgba(241, 196, 15, 0.32);
+    box-shadow: 0 2px 8px rgba(241,196,15,0.2);
+}
+
+/* ── C. Badge ──────────────────────────────────────────────────────────────── */
+.tl-badge {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 50px;
+    z-index: 100;
+    pointer-events: none;
+    animation: tl-badge-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+@keyframes tl-badge-in {
+    from { opacity: 0; transform: translateY(-8px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+.tl-badge-loading {
+    background: rgba(40,40,60,0.85);
+    color: #aaa;
+    border: 1px solid rgba(255,255,255,0.15);
+    animation: tl-loading-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes tl-loading-pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+.tl-badge-accurate {
+    background: rgba(39, 174, 96, 0.85);
+    color: #fff;
+    border: 1px solid rgba(39,174,96,0.95);
+    box-shadow: 0 2px 12px rgba(39,174,96,0.25);
+}
+
+.tl-badge-uncertain {
+    background: rgba(243, 156, 18, 0.85);
+    color: #fff;
+    border: 1px solid rgba(243,156,18,0.95);
+    box-shadow: 0 2px 12px rgba(243,156,18,0.25);
+}
+
+.tl-badge-inaccurate {
+    background: rgba(231, 76, 60, 0.85);
+    color: #fff;
+    border: 1px solid rgba(231,76,60,0.95);
+    box-shadow: 0 2px 12px rgba(231,76,60,0.3);
+}
+
+/* ── C. Tooltip ──────────────────────────────────────────────────────────────*/
+#tl-tooltip {
+    position: absolute;
+    min-width: 270px;
+    max-width: 340px;
+    background: rgba(18, 18, 30, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    color: #e8e8f2;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.45),
+        0 2px 8px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    z-index: 2147483647;
+
+    /* Entrance animation (driven by JS) */
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    overflow: hidden;
+}
+
+.tl-tt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px 10px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.tl-tt-verdict {
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.tl-tt-score {
+    font-size: 11px;
+    color: #7777a0;
+    font-weight: 600;
+    background: rgba(255,255,255,0.06);
+    padding: 2px 8px;
+    border-radius: 99px;
+}
+
+.tl-tt-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tl-tt-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tl-tt-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #6666a0;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.tl-tt-orig {
+    font-size: 12.5px;
+    color: #ff8080;
+    background: rgba(231,76,60,0.08);
+    padding: 6px 9px;
+    border-radius: 6px;
+    border-left: 3px solid rgba(231,76,60,0.5);
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.tl-tt-corr {
+    font-size: 12.5px;
+    color: #5dde8a;
+    background: rgba(39,174,96,0.08);
+    padding: 6px 9px;
+    border-radius: 6px;
+    border-left: 3px solid rgba(39,174,96,0.5);
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.tl-tt-link {
+    color: #5e9bdc;
+    font-size: 12px;
+    word-break: break-all;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.tl-tt-link:hover { color: #82b8f0; text-decoration: underline; }
+
+.tl-tt-footer {
+    padding: 7px 14px;
+    font-size: 10px;
+    color: #4444 66;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    text-align: center;
+    background: rgba(0,0,0,0.15);
+}
+
+/* ── D. Legacy class aliases (keep old names working if any linger) ───────── */
+.ai-flag        { }  /* forward-compat shim */
+.ai-flag-red    { background-color: rgba(231,76,60,0.20);  border-bottom: 2px solid rgba(231,76,60,0.85);  }
+.ai-flag-orange { background-color: rgba(230,126,34,0.18); border-bottom: 2px dashed rgba(230,126,34,0.85); }
+.ai-badge       { }  /* no-op shim */
